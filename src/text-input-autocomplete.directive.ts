@@ -9,7 +9,9 @@ import {
   Input,
   OnDestroy,
   Output,
-  ViewContainerRef
+  ViewContainerRef,
+  ApplicationRef,
+  EmbeddedViewRef
 } from '@angular/core';
 import getCaretCoordinates from 'textarea-caret';
 import { takeUntil } from 'rxjs/operators';
@@ -32,7 +34,7 @@ export class TextInputAutocompleteDirective implements OnDestroy {
   /**
    * The character that will trigger the menu to appear
    */
-  @Input() triggerCharacter = '@';
+  @Input() triggerCharacter: string = '@';
 
   /**
    * The regular expression that will match the search text after the trigger character
@@ -80,10 +82,12 @@ export class TextInputAutocompleteDirective implements OnDestroy {
     | undefined;
 
   private menuHidden$ = new Subject();
+  menuElem: HTMLElement;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private viewContainerRef: ViewContainerRef,
+    private appRef: ApplicationRef,
     private injector: Injector,
     private elm: ElementRef
   ) {}
@@ -158,17 +162,27 @@ export class TextInputAutocompleteDirective implements OnDestroy {
         ),
         triggerCharacterPosition: this.elm.nativeElement.selectionStart
       };
+      //Get DOM element from component
+      this.menuElem = (this.menu.component.hostView as EmbeddedViewRef<any>)
+        .rootNodes[0] as HTMLElement;
+
+      // Append Menu element to the body
+      document.body.appendChild(this.menuElem);
+
       const lineHeight = +getComputedStyle(
         this.elm.nativeElement
       ).lineHeight!.replace(/px$/, '');
+
+      const elmPosition = this.elm.nativeElement.getBoundingClientRect().top;
       const { top, left } = getCaretCoordinates(
         this.elm.nativeElement,
         this.elm.nativeElement.selectionStart
       );
       this.menu.component.instance.position = {
-        top: top + lineHeight,
+        top: elmPosition + top + lineHeight,
         left
       };
+
       this.menu.component.changeDetectorRef.detectChanges();
       this.menu.component.instance.selectChoice
         .pipe(takeUntil(this.menuHidden$))

@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  HostBinding
+} from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -7,9 +13,7 @@ import { Subject } from 'rxjs';
     <ul 
       *ngIf="choices?.length > 0"
       #dropdownMenu
-      class="dropdown-menu"
-      [style.top.px]="position?.top"
-      [style.left.px]="position?.left">
+      class="dropdown-menu">
       <li
         *ngFor="let choice of choices; trackBy:trackById"
         [class.active]="activeChoice === choice">
@@ -23,6 +27,10 @@ import { Subject } from 'rxjs';
   `,
   styles: [
     `
+      :host {
+        z-index: 100000;
+        position: absolute;
+      }
       .dropdown-menu {
         display: block;
         max-height: 200px;
@@ -52,6 +60,27 @@ export class TextInputAutocompleteMenuComponent {
 
   get choices() {
     return this._choices;
+  }
+  @HostBinding('style.top.px')
+  get top() {
+    const screenHeight = window.screen.height;
+    const menuHeight = this.dropdownMenuElement
+      ? this.dropdownMenuElement.nativeElement.offsetHeight
+      : 0;
+
+    return this.position.top + menuHeight < screenHeight
+      ? this.position.top
+      : this.position.top - menuHeight;
+  }
+  @HostBinding('style.left.px')
+  get left() {
+    const screenWidth = window.screen.width;
+    const menuWidth = this.dropdownMenuElement
+      ? this.dropdownMenuElement.nativeElement.offsetWidth
+      : 0;
+    return this.position.left + menuWidth < screenWidth
+      ? this.position.left
+      : this.position.left - menuWidth;
   }
 
   @HostListener('document:keydown.ArrowDown', ['$event'])
