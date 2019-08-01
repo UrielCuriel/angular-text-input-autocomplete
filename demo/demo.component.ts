@@ -35,7 +35,8 @@ const names = [
         [(ngModel)]="formControlValue"
         mwlTextInputAutocomplete
         [findChoices]="findChoices"
-        [getChoiceLabel]="getChoiceLabel">
+        [getChoiceLabel]="getChoiceLabel"
+        triggerCharacter="**">
       </textarea>
     </mwl-text-input-autocomplete-container>
   `

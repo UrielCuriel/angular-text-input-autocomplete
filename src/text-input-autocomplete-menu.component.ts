@@ -10,26 +10,22 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'mwl-text-input-autocomplete-menu',
   template: `
-    <ul 
+    <div
       *ngIf="choices?.length > 0"
       #dropdownMenu
       class="dropdown-menu">
-      <li
-        *ngFor="let choice of choices; trackBy:trackById"
-        [class.active]="activeChoice === choice">
-        <a
-          href="javascript:;"
-          (click)="selectChoice.next(choice)">
+        <a  *ngFor="let choice of choices; trackBy:trackById"
+        [class.active]="activeChoice === choice"
+          (click)="selectChoice.next(choice)" class="dropdown-item">
           {{ choice }}
         </a>
-      </li>
-    </ul>
+    </div>
   `,
   styles: [
     `
       :host {
         z-index: 100000;
-        position: absolute;
+        position: fixed;
       }
       .dropdown-menu {
         display: block;

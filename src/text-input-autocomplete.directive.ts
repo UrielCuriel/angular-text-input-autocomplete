@@ -94,7 +94,10 @@ export class TextInputAutocompleteDirective implements OnDestroy {
 
   @HostListener('keypress', ['$event.key'])
   onKeypress(key: string) {
-    if (key === this.triggerCharacter) {
+    if (
+      (this.triggerCharacter !== '**' && key === this.triggerCharacter) ||
+      (this.triggerCharacter === '**' && /[a-z|A-Z]/.test(key))
+    ) {
       this.showMenu();
     }
   }
@@ -102,7 +105,11 @@ export class TextInputAutocompleteDirective implements OnDestroy {
   @HostListener('input', ['$event.target.value'])
   onChange(value: string) {
     if (this.menu) {
-      if (value[this.menu.triggerCharacterPosition] !== this.triggerCharacter) {
+      if (
+        !value ||
+        (value[this.menu.triggerCharacterPosition] !== this.triggerCharacter &&
+          this.triggerCharacter !== '**')
+      ) {
         this.hideMenu();
       } else {
         const cursor = this.elm.nativeElement.selectionStart;
@@ -110,7 +117,8 @@ export class TextInputAutocompleteDirective implements OnDestroy {
           this.hideMenu();
         } else {
           const searchText = value.slice(
-            this.menu.triggerCharacterPosition + 1,
+            this.menu.triggerCharacterPosition +
+              (this.triggerCharacter === '**' ? 0 : 1),
             cursor
           );
           if (!searchText.match(this.searchRegexp)) {
@@ -173,14 +181,16 @@ export class TextInputAutocompleteDirective implements OnDestroy {
         this.elm.nativeElement
       ).lineHeight!.replace(/px$/, '');
 
-      const elmPosition = this.elm.nativeElement.getBoundingClientRect().top;
+      const elmPositionTop = this.elm.nativeElement.getBoundingClientRect().top;
+      const elmPositionLeft = this.elm.nativeElement.getBoundingClientRect()
+        .left;
       const { top, left } = getCaretCoordinates(
         this.elm.nativeElement,
         this.elm.nativeElement.selectionStart
       );
       this.menu.component.instance.position = {
-        top: elmPosition + top + lineHeight,
-        left
+        top: elmPositionTop + top + lineHeight,
+        left: elmPositionLeft + left
       };
 
       this.menu.component.changeDetectorRef.detectChanges();
