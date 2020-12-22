@@ -54,6 +54,10 @@ export declare class TextInputAutocompleteDirective implements OnDestroy {
    * A function that formats the selected choice once selected.
    */
   getChoiceLabel: (choice: any) => string;
+  /**
+   * Whether to close the menu when the host textarea loses focus
+   */
+  closeMenuOnBlur: boolean;
   private menu;
   private menuHidden$;
   menuElem: HTMLElement;

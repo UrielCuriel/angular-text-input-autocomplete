@@ -72,6 +72,11 @@ export class TextInputAutocompleteDirective implements OnDestroy {
    */
   @Input() getChoiceLabel: (choice: any) => string = choice => choice;
 
+  /**
+   * Whether to close the menu when the host textarea loses focus
+   */
+  @Input() closeMenuOnBlur = false;
+
   /* tslint:disable member-ordering */
   private menu:
     | {
@@ -154,6 +159,9 @@ export class TextInputAutocompleteDirective implements OnDestroy {
   onBlur() {
     if (this.menu) {
       this.menu.lastCaretPosition = this.elm.nativeElement.selectionStart;
+      if (this.closeMenuOnBlur === true) {
+        this.hideMenu();
+      }
     }
   }
 

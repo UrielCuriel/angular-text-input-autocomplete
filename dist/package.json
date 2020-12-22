@@ -1,7 +1,8 @@
 {
   "name": "angular-text-input-autocomplete",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A angular 6+ directive for adding autocomplete functionality to text input elements, built around composability",
+  "main": "bundles/angular-text-input-autocomplete.umd.js",
   "config": {
     "commitizen": {
       "path": "@commitlint/prompt"
@@ -98,7 +99,6 @@
     "textarea-caret": "^3.1.0",
     "tslib": "^1.9.0"
   },
-  "main": "bundles/angular-text-input-autocomplete.umd.js",
   "module": "fesm5/angular-text-input-autocomplete.js",
   "es2015": "fesm2015/angular-text-input-autocomplete.js",
   "esm5": "esm5/angular-text-input-autocomplete.js",
