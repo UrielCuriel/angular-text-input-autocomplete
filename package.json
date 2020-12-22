@@ -1,6 +1,6 @@
 {
   "name": "angular-text-input-autocomplete",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "A angular 6+ directive for adding autocomplete functionality to text input elements, built around composability",
   "main": "dist",
   "scripts": {
